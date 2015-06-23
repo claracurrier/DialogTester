@@ -5,7 +5,6 @@
 package mygame;
 
 import java.io.InputStream;
-import java.util.HashMap;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -22,8 +21,6 @@ public class DialogReader {
 
     private DefaultHandler currentHandler = new TMXHandler();
     private Dialog dialog = null;
-    private HashMap<Integer, Integer> tileSetsGids = new HashMap<>();
-    private int tileSetIndex = 0;
 
     // SAX library don't have SAXParser.setHandler(DefaultHandler) method, 
     //thats why we will use this workaround stub to parse hierarchy 

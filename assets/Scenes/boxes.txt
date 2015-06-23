@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog>
+
+<nonspeaker char="Dan" loc = "right facing = "right" expr = "neutral"></ns>
+
+<nonspeaker char="Ki" loc = "left" facing = "left" expr = "neutral"/>
+
+<line char = "Dan" speech = "This is a normal conversation. Blah blah blah."/>
+
+<line char = "Ki" expr = "peeved" speech="That doesn't sound like a normal thing to say."/>
+
+<line char = "Ki" expr = "happy" speech="Oh look, a new box!/>
+
+<nonspeaker char = "Ki" expr = "neutral"/>
+
+<line char = "Dan" facing = "left" speech="Where?"/>
+
+<line char = "Dan" facing = "right" expr = "confused" speech="I dont see-"/>
+
+<nonspeaker char = "Ki", expr = "happy"/>
+
+<line char = "Dan" expr = "happy" motion = "shake" speech="Oh, there it is!"/>
+
+<nonspeaker char = "Ki" expr = "neutral"/>
+
+<line char = "Dan" expr = "confused" speech="But how is that any more normal than what I said?"/>
+
+</dialog>

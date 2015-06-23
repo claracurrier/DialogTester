@@ -15,10 +15,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -31,30 +28,20 @@ public class DialogAS extends AbstractAppState implements ActionListener {
     private AssetManager assetManager;
     private Dialog dialog;
 
-    public DialogAS(SimpleApplication app, String dialogSource) {
+    public DialogAS(SimpleApplication app, String dialogSource) throws Exception {
         appl = app;
-        inputManager = appl.getInputManager();
-        assetManager = appl.getAssetManager();
 
         DialogReader reader = new DialogReader();
-        InputStream is = null;
-
-        try {
-            is = new BufferedInputStream(new FileInputStream("assets/Scenes/" + dialogSource + ".txt"));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(DialogAS.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            dialog = reader.readMap(is);
-        } catch (Exception ex) {
-            Logger.getLogger(DialogAS.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        InputStream is = new BufferedInputStream(new FileInputStream("assets/Scenes/" + dialogSource + ".txt"));
+        dialog = reader.readMap(is);
     }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
+        inputManager = appl.getInputManager();
+        assetManager = appl.getAssetManager();
+
     }
 
     @Override
