@@ -14,7 +14,7 @@ import tonegod.gui.core.Screen;
 
 /**
  *
- * @author PC
+ * @author Clara Currier
  */
 public class PauseMenu {
 
@@ -37,7 +37,7 @@ public class PauseMenu {
         win.setIgnoreMouse(true);
 
         //resume button
-        MyButton resumeGame = new MyButton(screen, "Resume",
+        MyButton resumeGame = new MyButton(screen, "PauseResume",
                 new Vector2f(15, 55), new Vector2f(100, 35)) {
             @Override
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
@@ -50,7 +50,7 @@ public class PauseMenu {
         win.addChild(resumeGame);
 
         //options
-        MyButton optionMenuBtn = new MyButton(screen, "Options",
+        MyButton optionMenuBtn = new MyButton(screen, "PauseOptions",
                 new Vector2f(15, 155)) {
             @Override
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
@@ -64,7 +64,7 @@ public class PauseMenu {
         win.addChild(optionMenuBtn);
 
         //exit button
-        MyButton exitToMenu = new MyButton(screen, "ExitToMenu",
+        MyButton exitToMenu = new MyButton(screen, "PauseExitToMenu",
                 new Vector2f(15, 205), new Vector2f(200, 35)) {
             @Override
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {

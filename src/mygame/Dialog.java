@@ -14,6 +14,7 @@ import java.util.Iterator;
 public class Dialog implements Iterator {
 
     private int linenum = 0;
+    private ArrayList<String> uniqueChars = new ArrayList<>();
     private ArrayList<String> character = new ArrayList<>();
     private ArrayList<String> expression = new ArrayList<>();
     private ArrayList<String> location = new ArrayList<>();
@@ -34,24 +35,36 @@ public class Dialog implements Iterator {
         return null;
     }
 
-    public String nextChar() {
+    public String curChar() {
         return character.get(linenum);
     }
 
-    public String nextExpr() {
+    public String curExpr() {
         return expression.get(linenum);
     }
 
-    public String nextFace() {
+    public String curFace() {
         return facing.get(linenum);
     }
 
-    public String nextLoc() {
+    public String curLoc() {
         return location.get(linenum);
+    }
+
+    public String curSpeech() {
+        return speech.get(linenum);
+    }
+
+    public ArrayList<String> getUniqueChars() {
+        return uniqueChars;
     }
 
     @Override
     public void remove() {
+    }
+
+    public void addUniqueChar(String charname) {
+        uniqueChars.add(charname);
     }
 
     public void addChar(String charname) {

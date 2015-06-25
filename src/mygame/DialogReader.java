@@ -48,6 +48,11 @@ public class DialogReader {
         public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {
             if (qName.equalsIgnoreCase("dialog")) {
                 dialog = new Dialog();
+                for (int i = 1; i < 5; i++) {
+                    if (!getString(atts, "char" + i).equals("")) {
+                        dialog.addUniqueChar(getString(atts, "char" + i));
+                    }
+                }
                 currentHandler = new DialogHandler(this);
             }
         }
@@ -64,11 +69,19 @@ public class DialogReader {
         @Override
         public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {
             if (qName.equalsIgnoreCase("line")) {
-                currentHandler = new CharacterHandler(this);
+                dialog.addChar(getString(atts, "char"));
+                dialog.addExpr(getString(atts, "expr"));
+                dialog.addFacing(getString(atts, "facing"));
+                dialog.addLoc(getString(atts, "loc"));
+                dialog.addSpeech(getString(atts, "speech"));
 
             } else if (qName.equalsIgnoreCase("nonspeaker")) {
-                currentHandler = new NonSpeakerHandler(this);
-
+                /*dialog.addChar(getString(atts, "char"));
+                 dialog.addExpr(getString(atts, "expr"));
+                 dialog.addFacing(getString(atts, "facing"));
+                 dialog.addLoc(getString(atts, "loc"));
+                 dialog.addSpeech(getString(atts, "speech"));
+                 */
             } else {
                 throw new SAXException("unknown tag:" + qName);
             }
@@ -77,71 +90,6 @@ public class DialogReader {
         @Override
         public void endElement(String uri, String name, String qName) throws SAXException {
             if (qName.equalsIgnoreCase("dialog")) {
-                currentHandler = previousHandler;
-            }
-        }
-    }
-
-    private class CharacterHandler extends DefaultHandler {
-
-        private DefaultHandler previousHandler;
-
-        public CharacterHandler(DefaultHandler previousHandler) {
-            this.previousHandler = previousHandler;
-        }
-
-        @Override
-        public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {
-            if (qName.equalsIgnoreCase("char")) {
-                dialog.addChar(getString(atts, "char"));
-            } else if (qName.equalsIgnoreCase("expr")) {
-                dialog.addExpr(getString(atts, "expr"));
-            } else if (qName.equalsIgnoreCase("facing")) {
-                dialog.addFacing(getString(atts, "facing"));
-            } else if (qName.equalsIgnoreCase("loc")) {
-                dialog.addLoc(getString(atts, "loc"));
-            } else if (qName.equalsIgnoreCase("speech")) {
-                dialog.addSpeech(getString(atts, "speech"));
-            } else {
-                throw new SAXException("unknown tag:" + qName);
-            }
-        }
-
-        @Override
-        public void endElement(String uri, String name, String qName) throws SAXException {
-            if (qName.equalsIgnoreCase("s")) {
-                currentHandler = previousHandler;
-            }
-        }
-    }
-
-    //don't use right now, needs a way to time
-    private class NonSpeakerHandler extends DefaultHandler {
-
-        private DefaultHandler previousHandler;
-
-        public NonSpeakerHandler(DefaultHandler previousHandler) {
-            this.previousHandler = previousHandler;
-        }
-
-        @Override
-        public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {
-            if (qName.equalsIgnoreCase("char")) {
-                dialog.addChar(getString(atts, "char"));
-            } else if (qName.equalsIgnoreCase("expr")) {
-                dialog.addExpr(getString(atts, "expr"));
-            } else if (qName.equalsIgnoreCase("facing")) {
-                dialog.addFacing(getString(atts, "facing"));
-            } else if (qName.equalsIgnoreCase("loc")) {
-                dialog.addLoc(getString(atts, "loc"));
-            } else {
-                throw new SAXException("unknown tag:" + qName);
-            }
-        }
-
-        @Override
-        public void endElement(String uri, String name, String qName) throws SAXException {
-            if (qName.equalsIgnoreCase("ns")) {
                 currentHandler = previousHandler;
             }
         }
@@ -163,7 +111,7 @@ public class DialogReader {
         return value;
     }
 
-    public Dialog readMap(InputStream IS) throws Exception {
+    public Dialog readFile(InputStream IS) throws Exception {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser saxParser = factory.newSAXParser();
         saxParser.parse(IS, new SAXStub());

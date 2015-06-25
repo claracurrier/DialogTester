@@ -43,6 +43,7 @@ public class MainMenu extends SimpleApplication implements ActionListener {
     @Override
     public void simpleInitApp() {
         getFlyByCamera().setEnabled(false); //enables mouse
+        cam.setParallelProjection(true);
 
         tgGuiNode = new Node("tgGuiNode");
         screen = new Screen(this);
@@ -72,7 +73,7 @@ public class MainMenu extends SimpleApplication implements ActionListener {
             inputManager.addListener(this, "pause");
         }
 
-        final Window win = new Window(screen, "win", new Vector2f(15, 15),
+        final Window win = new Window(screen, "MainWin", new Vector2f(15, 15),
                 new Vector2f(settings.getWidth() - 30, settings.getHeight() - 30));
         screen.addElement(win);
         win.setIsResizable(false);
@@ -170,10 +171,11 @@ public class MainMenu extends SimpleApplication implements ActionListener {
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
                 DialogAS dialogAS;
                 try {
-                    dialogAS = new DialogAS((SimpleApplication) app, textfield.getText());
+                    dialogAS = new DialogAS((SimpleApplication) app, textfield.getText(),
+                            settings, screen);
                     if (!debug) {
                         screen.removeElement(win);
-                        screen.removeElement(screen.getElementById("win"));
+                        screen.removeElement(screen.getElementById("MainWin"));
                         stateManager.attach(dialogAS);
                     } else {
                         makeErrorWindow(null);
@@ -214,7 +216,7 @@ public class MainMenu extends SimpleApplication implements ActionListener {
         win.addChild(txtbox);
 
         //go back button
-        MyButton goBackBtn = new MyButton(screen, "GoBack",
+        MyButton goBackBtn = new MyButton(screen, "ControlGoBack",
                 new Vector2f(15, 120)) {
             @Override
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {

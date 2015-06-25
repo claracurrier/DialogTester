@@ -14,8 +14,7 @@ import tonegod.gui.core.Screen;
 
 /**
  *
- * @author tonegod
- * @author PC
+ * @author tonegod EDITED by Clara Currier
  */
 public class MyButton extends Button {
 

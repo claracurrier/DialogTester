@@ -19,7 +19,7 @@ import tonegod.gui.core.Screen;
 
 /**
  *
- * @author PC
+ * @author Clara Currier
  */
 public class OptionsMenu {
 
@@ -115,7 +115,7 @@ public class OptionsMenu {
         win.addChild(vsyncBtn);
 
         //go back button
-        MyButton goBackBtn = new MyButton(screen, "GoBack",
+        MyButton goBackBtn = new MyButton(screen, "OptionsGoBack",
                 new Vector2f(15, 140)) {
             @Override
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
