@@ -5,6 +5,8 @@
 package mygame;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -21,6 +23,8 @@ public class DialogReader {
 
     private DefaultHandler currentHandler = new TMXHandler();
     private Dialog dialog = null;
+    private HashMap<String, Character> characters = new HashMap<>();
+    private ArrayList<Character> currentFrame = new ArrayList<>();
 
     // SAX library don't have SAXParser.setHandler(DefaultHandler) method, 
     //thats why we will use this workaround stub to parse hierarchy 
@@ -50,7 +54,9 @@ public class DialogReader {
                 dialog = new Dialog();
                 for (int i = 1; i < 5; i++) {
                     if (!getString(atts, "char" + i).equals("")) {
-                        dialog.addUniqueChar(getString(atts, "char" + i));
+                        String charName = getString(atts, "char" + i);
+                        dialog.addUniqueChar(charName);
+                        characters.put(charName, new Character(charName));
                     }
                 }
                 currentHandler = new DialogHandler(this);
@@ -68,20 +74,25 @@ public class DialogReader {
 
         @Override
         public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {
+
             if (qName.equalsIgnoreCase("line")) {
-                dialog.addChar(getString(atts, "char"));
-                dialog.addExpr(getString(atts, "expr"));
-                dialog.addFacing(getString(atts, "facing"));
-                dialog.addLoc(getString(atts, "loc"));
-                dialog.addSpeech(getString(atts, "speech"));
+                Character newChar = new Character(getString(atts, "char"));
+                newChar.setExpr(getString(atts, "expr"));
+                newChar.setFacing(getString(atts, "facing"));
+                newChar.setLoc(getString(atts, "loc"));
+                newChar.setSpeech(getString(atts, "speech"));
+                currentFrame.add(newChar);
+                //terminate frame
+                dialog.addFrame(new ArrayList<>(currentFrame));
+                currentFrame.removeAll(currentFrame);
 
             } else if (qName.equalsIgnoreCase("nonspeaker")) {
-                /*dialog.addChar(getString(atts, "char"));
-                 dialog.addExpr(getString(atts, "expr"));
-                 dialog.addFacing(getString(atts, "facing"));
-                 dialog.addLoc(getString(atts, "loc"));
-                 dialog.addSpeech(getString(atts, "speech"));
-                 */
+                Character newChar = new Character(getString(atts, "char"));
+                newChar.setExpr(getString(atts, "expr"));
+                newChar.setFacing(getString(atts, "facing"));
+                newChar.setLoc(getString(atts, "loc"));
+                currentFrame.add(newChar);
+
             } else {
                 throw new SAXException("unknown tag:" + qName);
             }

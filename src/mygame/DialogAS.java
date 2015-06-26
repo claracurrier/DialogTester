@@ -16,6 +16,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -36,7 +37,7 @@ import tonegod.gui.core.Screen;
  * @author Clara Currier
  */
 public class DialogAS extends AbstractAppState implements ActionListener {
-    
+
     private SimpleApplication appl;
     private InputManager inputManager;
     private AssetManager assetManager;
@@ -46,31 +47,32 @@ public class DialogAS extends AbstractAppState implements ActionListener {
     private Window win;
     private Label txtbox;
     private HashMap<String, Node> charNodes = new HashMap<>();
-    
+    private boolean prepared = false;
+
     public DialogAS(SimpleApplication app, String dialogSource, AppSettings set, ElementManager s) throws Exception {
         appl = app;
         settings = set;
         screen = (Screen) s;
-        
+
         DialogReader reader = new DialogReader();
         InputStream is = new BufferedInputStream(new FileInputStream("assets/Scenes/" + dialogSource + ".txt"));
         dialog = reader.readFile(is);
     }
-    
+
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         inputManager = appl.getInputManager();
         assetManager = appl.getAssetManager();
-        
+
         win = new Window(screen, "dialogWin",
-                new Vector2f(50, settings.getHeight() - 160),
+                new Vector2f(120, settings.getHeight() - 160),
                 new Vector2f(450, 150));
         screen.addElement(win);
         win.setIsResizable(false);
         win.setWindowIsMovable(false);
         win.setIgnoreMouse(true);
-        
+
         txtbox = new Label(screen, "dialogText", new Vector2f(15, 15),
                 new Vector2f(385, 125));
         txtbox.setFont("Interface/Fonts/Arial.fnt");
@@ -78,14 +80,16 @@ public class DialogAS extends AbstractAppState implements ActionListener {
         txtbox.setTextWrap(LineWrapMode.Word);
         txtbox.setFontSize(18f);
         win.addChild(txtbox);
-        
+
         for (String chars : dialog.getUniqueChars()) {
             Node portrait = new Node(chars);
             Geometry geom = new Geometry("Quad", new Quad(200f, 400f));
             Texture tex = assetManager.loadTexture("Textures/" + chars + "_neutral.png");
+            tex.setWrap(Texture.WrapMode.Repeat);
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setTexture("ColorMap", tex);
             geom.setMaterial(mat);
+            mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
             portrait.attachChild(geom);
             appl.getGuiNode().attachChild(portrait);
             charNodes.put(chars, portrait);
@@ -93,7 +97,7 @@ public class DialogAS extends AbstractAppState implements ActionListener {
         setEnabled(true);
         nextLine();
     }
-    
+
     @Override
     public void setEnabled(boolean enabled) {
         if (enabled) {
@@ -108,7 +112,7 @@ public class DialogAS extends AbstractAppState implements ActionListener {
             }
         }
     }
-    
+
     @Override
     public void cleanup() {
         super.cleanup();
@@ -117,49 +121,58 @@ public class DialogAS extends AbstractAppState implements ActionListener {
         screen.removeElement(win);
         screen.removeElement(txtbox);
     }
-    
+
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
         if (name.equals("continue") && !isPressed) {
             nextLine();
         }
     }
-    
+
     private void nextLine() {
         if (dialog.hasNext()) {
-            Node curCharNode = charNodes.get(dialog.curChar());
+            for (Character chara : dialog.getCurFrame()) {
+                Node curCharNode = charNodes.get(chara.getName());
 
-            //update the box's nameplate
+                if (!chara.getExpr().equals("")) {
+                    //update the portrait
+                    Texture tex = assetManager.loadTexture("Textures/"
+                            + chara.getName() + "_" + chara.getExpr() + ".png");
+                    tex.setWrap(Texture.WrapMode.Repeat);
+                    ((Geometry) curCharNode.getChild("Quad"))
+                            .getMaterial().setTexture("ColorMap", tex);
+                }
 
-            if (!dialog.curExpr().equals("")) {
-                //update the portrait
-                Texture tex = assetManager.loadTexture("Textures/"
-                        + dialog.curChar() + "_" + dialog.curExpr() + ".png");
-                ((Geometry) curCharNode.getChild("Quad"))
-                        .getMaterial().setTexture("ColorMap", tex);
-            }
-            if (!dialog.curFace().equals("")) {
-                //update direction of the portrait
-                if (dialog.curFace().equals("right")) {
-                    //curCharNode.setLocalScale(-1f, 1f, 1f);
-                } else { //left, default drawing
-                    curCharNode.setLocalScale(1f, 1f, 1f);
+                if (!chara.getFacing().equals("")) {
+                    //update facing and location
+                    if (chara.getFacing().equals("right")) {
+                        curCharNode.setLocalScale(-1f, 1f, 1f);
+                        if (chara.getLoc().equals("right")) {
+                            curCharNode.setLocalTranslation(-settings.getWidth() + 200f, 0f, -1f);
+                        } else if (chara.getLoc().equals("left")) {
+                            curCharNode.setLocalTranslation(200f, 0f, -1f);
+                        }
+
+                    } else if (chara.getFacing().equals("left")) { //left, default drawing
+                        curCharNode.setLocalScale(1f, 1f, 1f);
+                        if (chara.getLoc().equals("right")) {
+                            curCharNode.setLocalTranslation(settings.getWidth() - 200f, 0f, -1f);
+                        } else if (chara.getLoc().equals("left")) {
+                            curCharNode.setLocalTranslation(0f, 0f, -1f);
+                        }
+                    }
+                }
+
+                //update the box's speech text and nameplate
+                if (chara.getSpeech()!=null) {
+                    txtbox.setText(chara.getSpeech());
+                    win.setWindowTitle(chara.getName());
                 }
             }
-            if (!dialog.curLoc().equals("")) {
-                //update the location of the portrait
-                if (dialog.curLoc().equals("right")) {
-                    curCharNode.setLocalTranslation(settings.getWidth() - 200f, 0f, -1f);
-                } else { //left, may need to add more for positions
-                    curCharNode.setLocalTranslation(0f, 0f, -1f);
-                }
-            }
-            //update the box's speech text
-            txtbox.setText(dialog.curSpeech());
             dialog.next();
-            
         } else {
             //end the dialog
+            dialog.reset();
         }
     }
 }

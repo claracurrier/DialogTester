@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dialog char1="Dan" char2="Ki">
 
-<nonspeaker char = "Dan" loc = "right" facing = "right" expr = "neutral"/>
+<nonspeaker char = "Dan" loc = "left" facing = "right" expr = "neutral"/>
 
-<nonspeaker char = "Ki" loc = "left" facing = "left" expr = "neutral"/>
+<nonspeaker char = "Ki" loc = "right" facing = "left" expr = "neutral"/>
 
-<line char = "Dan" loc = "left" facing = "right" speech = "This is a normal conversation. Blah blah blah."/>
+<line char = "Dan" speech = "This is a normal conversation. Blah blah blah."/>
 
-<line char = "Ki" loc = "right" expr = "peeved" speech="That doesn't sound like a normal thing to say."/>
+<line char = "Ki" expr = "peeved" speech="That doesn't sound like a normal thing to say."/>
 
 <line char = "Ki" expr = "happy" speech="Oh look, a new box!"/>
 
 <nonspeaker char = "Ki" expr = "neutral"/>
 
-<line char = "Dan" facing = "left" speech="Where?"/>
+<line char = "Dan" facing = "left" loc = "left" expr = "neutral" speech="Where?"/>
 
-<line char = "Dan" facing = "right" expr = "confused" speech="I dont see-"/>
+<line char = "Dan" facing = "right" loc = "left" expr = "confused" speech="I dont see-"/>
 
 <nonspeaker char = "Ki" expr = "happy"/>
 
