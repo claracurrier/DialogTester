@@ -32,6 +32,8 @@ public class MainMenu extends SimpleApplication implements ActionListener {
         AppSettings newSettings = new AppSettings(true);
         newSettings.setFrameRate(60);
         app.setSettings(newSettings);
+        app.setDisplayFps(false);
+        app.setDisplayStatView(false);
         app.start();
     }
     private static Screen screen;
@@ -93,17 +95,17 @@ public class MainMenu extends SimpleApplication implements ActionListener {
         win.addChild(startDialog);
 
         //Validate
-        MyButton validateBtn = new MyButton(screen, "Validate",
+        MyButton convertBtn = new MyButton(screen, "Convert",
                 new Vector2f(15, 105)) {
             @Override
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
                 makeTextField(true);
             }
         };
-        validateBtn.setFont("Interface/Fonts/Arial.fnt");
-        validateBtn.setText("Validate");
-        validateBtn.setTextAlign(BitmapFont.Align.Center);
-        win.addChild(validateBtn);
+        convertBtn.setFont("Interface/Fonts/Arial.fnt");
+        convertBtn.setText("Convert");
+        convertBtn.setTextAlign(BitmapFont.Align.Center);
+        win.addChild(convertBtn);
 
         //Options
         MyButton optionMenuBtn = new MyButton(screen, "Options",
@@ -135,7 +137,7 @@ public class MainMenu extends SimpleApplication implements ActionListener {
         ispaused = false;
     }
 
-    private void makeTextField(final boolean debug) {
+    private void makeTextField(final boolean converting) {
         int w = settings.getWidth();
         int h = settings.getHeight();
         final Window win = new Window(screen, "textFieldWin", new Vector2f(w / 2 - 100, h / 2 - 100),
@@ -146,10 +148,9 @@ public class MainMenu extends SimpleApplication implements ActionListener {
         win.setIgnoreMouse(true);
 
         //Textfield
-        final TextField textfield = new TextField(screen, "textField", new Vector2f(15, 15),
+        final TextField textfield = new TextField(screen, "textField", new Vector2f(20, 30),
                 new Vector2f(200, 30));
         win.addChild(textfield);
-        textfield.onGetFocus(null);
 
         //Back
         MyButton backBtn = new MyButton(screen, "textFieldBack",
@@ -171,14 +172,14 @@ public class MainMenu extends SimpleApplication implements ActionListener {
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
                 DialogAS dialogAS;
                 try {
-                    dialogAS = new DialogAS((SimpleApplication) app, textfield.getText(),
-                            settings, screen);
-                    if (!debug) {
+                    if (!converting) {
+                        dialogAS = new DialogAS((SimpleApplication) app, textfield.getText(),
+                                settings, screen);
                         screen.removeElement(win);
                         screen.removeElement(screen.getElementById("MainWin"));
                         stateManager.attach(dialogAS);
                     } else {
-                        makeErrorWindow(null);
+                        makeXMLFile();
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
@@ -191,6 +192,10 @@ public class MainMenu extends SimpleApplication implements ActionListener {
         loadBtn.setText("Load");
         loadBtn.setTextAlign(BitmapFont.Align.Center);
         win.addChild(loadBtn);
+    }
+
+    private void makeXMLFile() {
+        makeErrorWindow(new Exception("Not supported!"));
     }
 
     private void makeErrorWindow(Exception e) {

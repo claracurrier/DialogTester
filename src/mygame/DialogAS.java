@@ -55,7 +55,7 @@ public class DialogAS extends AbstractAppState implements ActionListener {
         screen = (Screen) s;
 
         DialogReader reader = new DialogReader();
-        InputStream is = new BufferedInputStream(new FileInputStream("assets/Scenes/" + dialogSource + ".txt"));
+        InputStream is = new BufferedInputStream(new FileInputStream(dialogSource + ".txt"));
         dialog = reader.readFile(is);
     }
 
@@ -164,7 +164,7 @@ public class DialogAS extends AbstractAppState implements ActionListener {
                 }
 
                 //update the box's speech text and nameplate
-                if (chara.getSpeech()!=null) {
+                if (chara.getSpeech() != null) {
                     txtbox.setText(chara.getSpeech());
                     win.setWindowTitle(chara.getName());
                 }
